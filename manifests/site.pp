@@ -63,3 +63,5 @@ host { 'testing host entry' :
   name  => 'reddytkv.puppetlabs.vm',
   ip    => '127.0.0.1',
 }
+
+include users
