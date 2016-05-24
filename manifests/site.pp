@@ -42,6 +42,8 @@ node 'abrader.puppetlabs.vm' {
   notify { "This is ${::fqdn}. I am abrader_production environment." : }
   
   include users
+  
+  include skeleton
 
   host { 'testing':
     ensure => present,
