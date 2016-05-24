@@ -49,12 +49,14 @@ node 'abrader.puppetlabs.vm' {
 #    content => "Don't mess with my cat while he is eating :p\n",
 #  }
 
-  host { 'testing host entry':
-    name => 'testing.puppetlabs.vm',
-    ip   => '127.0.0.1',
+  host { 'testing':
+    ensure => present,
+    name   => 'testing.puppetlabs.vm',
+    ip     => '127.0.0.1',
   }
 
-  exec { "cowsay 'Welcome to ${::fqdn}!' > /etc/motd" :
+  exec { 'cowsay motd' :
+    command => "cowsay 'Welcome to ${::fqdn}!' > /etc/motd",
     path    => '/usr/bin:/usr/local/bin',
     creates => '/etc/motd',
   }
