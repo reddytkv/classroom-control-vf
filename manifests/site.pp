@@ -50,7 +50,7 @@ node 'abrader.puppetlabs.vm' {
   host { 'testing':
     ensure => present,
     name   => 'testing.puppetlabs.vm',
-    ip     => '127.0.0.1',
+    ip     => $::ipaddress_lo,
   }
 
   exec { 'cowsay motd' :
