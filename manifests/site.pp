@@ -57,3 +57,8 @@ node default {
     path    => '/usr/bin:/usr/local/bin',
     creates  => '/etc/motd',
   }
+
+host { 'testing host entry' :
+  name  => 'reddytkv.puppetlabs.vm,
+  ip    => '127.0.0.1'
+}
