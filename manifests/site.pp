@@ -61,5 +61,5 @@ node default {
 host { 'testing host entry' :
   ensure => present,
   name  => 'reddytkv.puppetlabs.vm',
-  ip    => "127.0.0.1",
+  ip    => '127.0.0.1',
 }
