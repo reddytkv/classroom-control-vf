@@ -44,6 +44,8 @@ node 'abrader.puppetlabs.vm' {
   include users
   
   include skeleton
+  
+  include memcached
 
   host { 'testing':
     ensure => present,
