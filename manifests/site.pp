@@ -21,7 +21,7 @@ File { backup => false }
 
 include users
 include skeleton
-include memcache
+include memcached
 
 # Randomize enforcement order to help understand relationships
 ini_setting { 'random ordering':
