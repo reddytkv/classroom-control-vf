@@ -6,6 +6,7 @@ package { 'memcached' :
 
 file { 'memcached config' :
   ensure => 'file',
+  path  => '/etc/sysconfig/memcached',
   group =>  'root', 
   owner => 'root',
   mode  => '0644',
