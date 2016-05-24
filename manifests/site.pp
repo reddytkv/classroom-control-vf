@@ -41,12 +41,17 @@ ini_setting { 'random ordering':
 node 'abrader.puppetlabs.vm' {
   notify { "This is ${::fqdn}. I am abrader_production environment." : }
   
-  file { '/etc/motd' :
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    content => "Don't mess with my cat while he is eating :p\n",
+#  file { '/etc/motd' :
+#    ensure  => file,
+#    owner   => 'root',
+#    group   => 'root',
+#    mode    => '0644',
+#    content => "Don't mess with my cat while he is eating :p\n",
+#  }
+
+  exec { "cowsay 'Welcome to ${::fqdn}!' > /etc/motd" :
+    path    => '/usr/bin:/usr/local/bin',
+    creates => '/etc/motd',
   }
 }
 
