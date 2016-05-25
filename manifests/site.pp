@@ -33,6 +33,18 @@ ini_setting { 'random ordering':
   value   => 'title-hash',
 }
 
+# Lab 14.1 begin  
+  user { 'admin':
+    ensure => present,
+  }
+
+  class { 'aliases':
+    admin   => 'admin',
+    require => User['admin'],
+  }
+# Lab 14.1 end
+
+
 # DEFAULT NODE
 # Node definitions in this file are merged with node data from the console. See
 # http://docs.puppetlabs.com/guides/language_guide.html#nodes for more on
