@@ -33,7 +33,7 @@ ini_setting { 'random ordering':
   value   => 'title-hash',
 }
 
-# Lab 14.1 begin  
+  # Lab 14.1 begin  
   user { 'admin':
     ensure => present,
   }
@@ -42,7 +42,11 @@ ini_setting { 'random ordering':
     admin   => 'admin',
     require => User['admin'],
   }
-# Lab 14.1 end
+  # Lab 14.1 end
+  
+  # Lab 15.1 begin
+  include users::admins
+  # Lab 15.1 end
 
 
 # DEFAULT NODE
