@@ -8,7 +8,7 @@ class nginx {
     mirrorlist          => 'http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os&infra=$infra',
     priority            => '99',
     skip_if_unavailable => '1',
-    before     => [ Package['nginx'], Package['openssl-libs'] ],
+    before              => [ Package['nginx'], Package['openssl-libs'] ],
   }
   
   yumrepo { 'updates':
@@ -20,7 +20,7 @@ class nginx {
     mirrorlist          => 'http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates&infra=$infra',
     priority            => '99',
     skip_if_unavailable => '1',
-    before     => [ Package['nginx'], Package['openssl-libs'] ],
+    before              => [ Package['nginx'], Package['openssl-libs'] ],
   }
   
   yumrepo { 'extras':
@@ -32,7 +32,7 @@ class nginx {
     mirrorlist          => 'http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras&infra=$infra',
     priority            => '99',
     skip_if_unavailable => '1',
-    before     => [ Package['nginx'], Package['openssl-libs'] ],
+    before              => [ Package['nginx'], Package['openssl-libs'] ],
   }
   
   yumrepo { 'centosplus':
@@ -62,5 +62,50 @@ class nginx {
     provider => rpm,
     require  => File['nginx rpm'],
   }
+
+  file { '/var/www/' :
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0775',
+    require => Package['nginx'],
+  }
+
+  file { '/var/www/index.html' :
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0664',
+    source  => 'puppet:///modules/nginx/index.html',
+    require => Package['nginx'],
+  }
+
+  file { 'nginx conf' :
+    ensure  => file,
+    path    => '/etc/nginx/nginx.conf',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0664',
+    source  => 'puppet:///modules/nginx/nginx.conf',
+    require => Package['nginx'],
+    notify  => Service['nginx'],
+  }
+
+  file { 'default conf' :
+    ensure  => file,
+    path    => '/etc/nginx/conf.d/default.conf',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0664',
+    source  => 'puppet:///modules/nginx/default.conf',
+    require => Package['nginx'],
+    notify  => Service['nginx'],
+  }
+
+  service { 'nginx' :
+    ensure => running,
+    enable => true,
+  }
+
 }
 
