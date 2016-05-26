@@ -1,41 +1,15 @@
-class nginx {
-  case $::osfamily {
-    'redhat','debian': {
-      $package = 'nginx'
-      $owner   = 'root'
-      $group   = 'root'
-      $docroot = '/var/www'
-      $confdir = '/etc/nginx'
-      $logdir  = '/var/log/nginx'
-    }
-    'windows': {
-      $package = 'nginx-service'
-      $owner   = 'Administrator'
-      $group   = 'Administrators'
-      $docroot = 'C:/ProgramData/nginx/html'
-      $confdir = 'C:/ProgramData/nginx'
-      $logdir  = 'C:/ProgramData/nginx/logs'
-    }
-    default : {
-      fail("Module ${module_name} is not intended to run on ${::osfamily}")
-    }
-  }
-  
-  $docroot = $root ? {
-    undef   => $default_docroot,
-    default => $root,
-  }
-  
-  $runas_user = $::osfamily ? {
-    'redhat'  => 'nginx',
-    'debian'  => 'www-data',
-    'windows' => 'nobody',
-  }
-
+class nginx (
+  $package    = $nginx::params::package,
+  $owner      = $nginx::params::owner,
+  $group      = $nginx::params::group,
+  $docroot    = $nginx::params::docroot,
+  $confdir    = $nginx::params::confdir,
+  $logdir     = $nginx::params::logdir,
+  $runas_user = $nginx::params::runas_user,
+) inherits nginx::params {
   if $::virtual {
     $virt_name = capitalize($::virtual)
   }
-
 
   File {
     owner   => $owner,
@@ -106,10 +80,10 @@ class nginx {
     ensure  => directory,
   }
 
-  file { 'index.html' :
+  file { 'index html' :
     ensure  => file,
     path    => "${docroot}/index.html",
-    source  => "puppet:///modules/${module_name}/index.html",
+    content => template('nginx/index.html.erb'),
   }
 
   file { 'nginx conf' :
@@ -127,10 +101,9 @@ class nginx {
   service { 'nginx' :
     ensure    => running,
     enable    => true,
-    require   => File['index.html'], 
+    require   => File['index html'], 
     subscribe => [ File['nginx conf'], File['default conf'] ],
   }
 
 }
-
 
