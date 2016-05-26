@@ -42,11 +42,14 @@ node 'abrader.puppetlabs.vm' {
   notify { "This is ${::fqdn}. I am abrader_production environment." : }
 
   include users
-
   include skeleton
-
   include memcached
-
+  
+  # Lab 19.1 begin
+  include wrappers::limits
+  # Lab 19.1 end
+  
+  
   # Lab 18.1 begin
   class { 'nginx' :
     docroot => '/var/vvv',
