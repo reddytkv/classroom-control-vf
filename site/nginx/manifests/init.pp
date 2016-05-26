@@ -20,12 +20,22 @@ class nginx {
       fail("Module ${module_name} is not intended to run on ${::osfamily}")
     }
   }
-
+  
+  $docroot = $root ? {
+    undef   => $default_docroot,
+    default => $root,
+  }
+  
   $runas_user = $::osfamily ? {
     'redhat'  => 'nginx',
     'debian'  => 'www-data',
     'windows' => 'nobody',
   }
+
+  if $::virtual {
+    $virt_name = capitalize($::virtual)
+  }
+
 
   File {
     owner   => $owner,
