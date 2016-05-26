@@ -19,11 +19,6 @@
 # Disable filebucket by default for all File resources:
 File { backup => false }
 
-include users
-include skeleton
-include memcached
-include nginx
-
 # Randomize enforcement order to help understand relationships
 ini_setting { 'random ordering':
   ensure  => present,
@@ -32,27 +27,6 @@ ini_setting { 'random ordering':
   setting => 'ordering',
   value   => 'title-hash',
 }
-
-  # Lab 14.1 begin  
-  user { 'admin':
-    ensure => present,
-  }
-
-  class { 'aliases':
-    admin   => 'admin',
-    require => User['admin'],
-  }
-  # Lab 14.1 end
-  
-  # Lab 15.1 begin
-  include users::admins
-  # Lab 15.1 end
-
-#Lab 17.1 begin
-$message = hiera('message')
-notify{ "The value Hiera returns from message variable = ${message}" : }
-
-# Lab 17.1 end
 
 # DEFAULT NODE
 # Node definitions in this file are merged with node data from the console. See
@@ -64,35 +38,65 @@ notify{ "The value Hiera returns from message variable = ${message}" : }
 # will be included in every node's catalog, *in addition* to any classes
 # specified in the console for that node.
 
+node 'abrader.puppetlabs.vm' {
+  notify { "This is ${::fqdn}. I am abrader_production environment." : }
+
+  include users
+
+  include skeleton
+
+  include memcached
+
+  # Lab 18.1 begin
+  class { 'nginx' :
+    root => '/var/vvv',
+  }
+  # Lab 18.1 end
+
+  # Lab 14.1 begin  
+  user { 'admin':
+    ensure => present,
+  }
+
+  class { 'aliases':
+    admin   => 'admin',
+    require => User['admin'],
+  }
+  # Lab 14.1 end
+
+  # Lab 15.1 begin
+  include users::admins
+  # Lab 15.1 end
+
+  # Lab 17.1 begin
+  $message = hiera('message')
+
+  notify { "The value Hiera returns for message variable = ${message}" : }
+  # Lab 17.1 end
+
+  if $::virtual {
+    $vmname = capitalize($::virtual)
+
+    notify { "This is a ${vmname} virtual machine/container" : }
+  }
+
+  host { 'testing':
+    ensure => present,
+    name   => 'testing.puppetlabs.vm',
+    ip     => $::ipaddress_lo,
+  }
+
+  exec { 'cowsay motd' :
+    command => "cowsay 'Welcome to ${::fqdn}!' > /etc/motd",
+    path    => '/usr/bin:/usr/local/bin',
+    creates => '/etc/motd',
+  }
+}
+
 node default {
   # This is where you can declare classes for all nodes.
   # Example:
   #   class { 'my_class': }
-  notify { "Hello,my name is ${::hostname}": }
+  notify { "Hello, my name is ${::hostname}": }
 }
 
-#file {'/etc/motd' :
-#  ensure  => file,
-#  owner   => 'root',
-#  group   => 'root',
-#  mode    => '0664',
-#  content => "Everything is awesome ...... ", 
-#}
-
-  exec { "cowsay 'Welcome to ${::fqdn}!' > /etc/motd" :
-    path    => '/usr/bin:/usr/local/bin',
-    creates  => '/etc/motd',
-  }
-
-host { 'testing host entry' :
-  ensure => present,
-  name  => 'reddytkv.puppetlabs.vm',
-  ip    => '127.0.0.1',
-}
-
-
-  if $::virtual {
-    $vmname = capitalize($::virtual)
-    
-    notify { "This is a ${vmname} virtual machine/container" : }
-  }
