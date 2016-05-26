@@ -48,6 +48,11 @@ ini_setting { 'random ordering':
   include users::admins
   # Lab 15.1 end
 
+#Lab 17.1 begin
+$message = hiera('message')
+notify{ "The value Hiera returns from message variable = ${message}" : }
+
+# Lab 17.1 end
 
 # DEFAULT NODE
 # Node definitions in this file are merged with node data from the console. See
