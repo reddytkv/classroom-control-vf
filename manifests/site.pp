@@ -38,7 +38,7 @@ ini_setting { 'random ordering':
 # will be included in every node's catalog, *in addition* to any classes
 # specified in the console for that node.
 
-node 'abrader.puppetlabs.vm' {
+node 'reddytkv.puppetlabs.vm' {
   notify { "This is ${::fqdn}. I am abrader_production environment." : }
 
   include users
