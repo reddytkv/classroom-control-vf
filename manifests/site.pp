@@ -49,7 +49,7 @@ node 'abrader.puppetlabs.vm' {
 
   # Lab 18.1 begin
   class { 'nginx' :
-    root => '/var/vvv',
+    docroot => '/var/vvv',
   }
   # Lab 18.1 end
 
