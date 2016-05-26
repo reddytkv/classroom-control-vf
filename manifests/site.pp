@@ -39,61 +39,7 @@ ini_setting { 'random ordering':
 # specified in the console for that node.
 
 node 'reddytkv.puppetlabs.vm' {
-  notify { "This is ${::fqdn}. I am abrader_production environment." : }
-
-  include users
-  include skeleton
-  include memcached
-  
-  # Lab 19.1 begin
-  include wrappers::limits
-  # Lab 19.1 end
-  
-  
-  # Lab 18.1 begin
-  class { 'nginx' :
-    docroot => '/var/vvv',
-  }
-  # Lab 18.1 end
-
-  # Lab 14.1 begin  
-  user { 'admin':
-    ensure => present,
-  }
-
-  class { 'aliases':
-    admin   => 'admin',
-    require => User['admin'],
-  }
-  # Lab 14.1 end
-
-  # Lab 15.1 begin
-  include users::admins
-  # Lab 15.1 end
-
-  # Lab 17.1 begin
-  $message = hiera('message')
-
-  notify { "The value Hiera returns for message variable = ${message}" : }
-  # Lab 17.1 end
-
-  if $::virtual {
-    $vmname = capitalize($::virtual)
-
-    notify { "This is a ${vmname} virtual machine/container" : }
-  }
-
-  host { 'testing':
-    ensure => present,
-    name   => 'testing.puppetlabs.vm',
-    ip     => $::ipaddress_lo,
-  }
-
-  exec { 'cowsay motd' :
-    command => "cowsay 'Welcome to ${::fqdn}!' > /etc/motd",
-    path    => '/usr/bin:/usr/local/bin',
-    creates => '/etc/motd',
-  }
+ include role::blog
 }
 
 node default {
